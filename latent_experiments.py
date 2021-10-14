@@ -42,6 +42,8 @@ def construct_gif(xs, type='closed', title='', cols=[], cmap='viridis'):
     os.remove('plots/{}_interpolate/{}'.format(type, filename))
 
 def interpolate(type='closed', n=25, n_steps=8, time_end=6):
+    if not os.path.exists('plots/{}_interpolate'.format(type)):
+        os.makedirs('plots/{}_interpolate'.format(type))
     data, model = load(type)
     idxe = np.where(np.logical_and(data.total_time_steps >= expo_start, data.total_time_steps <= time_end))[0]
     idxt = np.where(data.total_time_steps <= train_end)[0]

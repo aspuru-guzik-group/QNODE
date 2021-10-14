@@ -15,6 +15,8 @@ expo_start = 1.9732
 expo_good_end = 4
 
 def heisenberg_plot(type, samples=10, iter=0):
+    if not os.path.exists('plots/{}_heisenberg'.format(type)):
+        os.makedirs('plots/{}_heisenberg'.format(type))
     data, model = load(type)
     time_end = 6
     idx_ex = np.where(np.logical_and(data.total_time_steps >= expo_start, data.total_time_steps <= time_end))[0]
@@ -52,7 +54,7 @@ def heisenberg_plot(type, samples=10, iter=0):
     ax.view_init(elev=45, azim=-55)
     ax.text(-0.5,0.75,179, r' var$(x) + $var$(z) =1 $', rotation=90, fontsize=15, rotation_mode="anchor")
     title = "heisenberg_" + type
-    plt.savefig('plots/heisenberg_' + type + '/' + '{}_{}-{}.png'.format(str(samples), title, iter), bbox_inches='tight')
+    plt.savefig('plots/{}_heisenberg/{}_{}-{}.png'.format(type, samples, title, iter), bbox_inches='tight')
     plt.close()
 
 def main():

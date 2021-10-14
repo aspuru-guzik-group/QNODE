@@ -11,6 +11,7 @@ from plot_helpers import *
 import imageio
 from model import load
 from sklearn.decomposition import PCA
+import os
 
 train_end = 2
 expo_start = 1.9732
@@ -19,6 +20,8 @@ np.random.seed(0)
 torch.manual_seed(0)
 
 def bs_train_and_sample(type, num):
+    if not os.path.exists('plots/bs_train_and_sample'):
+        os.makedirs('plots/bs_train_and_sample')
     expo_good_end = 6
     data, model = load(type)
     n = data.total_expect_data.shape[0]
