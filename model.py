@@ -6,7 +6,6 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torchdiffeq import odeint
 from qutip import Bloch
-import imageio
 
 def save_model(model, model_name):
     torch.save(model.func.state_dict(), './saved_models/{}_func.pt'.format(model_name))
