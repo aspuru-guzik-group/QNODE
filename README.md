@@ -1,6 +1,26 @@
 # QNODE: discovering quantum dynamics using latent neural ODEs
 
-### Prerequisites
+## Samples
+<p align="center">
+<img src="gifs/closed-4.gif" width="250" height="250">
+<img src="gifs/closed-6.gif" width="250" height="250">
+<img src="gifs/open-7.gif" width="250" height="250">
+<img src="gifs/open-10.gif" width="250" height="250">
+</p>
+
+## Latent Dynamics
+<p align="center">
+<img src="gifs/latentdynamsclosed.gif" width="250" height="250">
+<img src="gifs/latentdynamsopen.gif" width="250" height="250">
+</p>
+
+## Interpolations
+<p align="center">
+<img src="gifs/closed interpolate from 235-914.gif" width="250" height="250">
+<img src="gifs/open interpolate from 243-269.gif" width="250" height="250">
+</p>
+
+## Prerequisites
 
 | command | min. version |
 |:-:|:-:|
@@ -14,7 +34,10 @@
 
 ## Training Models
 
-run `python3 train.py`
+run 
+```
+python3 train.py
+```
 
 To train a model with different hyperparameters:
 | command | meaning |
@@ -29,10 +52,14 @@ To train a model with different hyperparameters:
 | --lr | learning rate  |
 
 Example: 
-`python3 train.py --seed 1 --epochs 5000 --lr 5e-3 --type closed`
+```
+python3 train.py --seed 1 --epochs 5000 --lr 5e-3 --type closed
+```
 
 ## Generating Results
 
-run `./create_plots.sh`
-
+run 
+```
+./create_plots.sh`
+```
 <sub><sup>Note: you might have to run `chmod +x create_plots.sh`</sup></sub>
