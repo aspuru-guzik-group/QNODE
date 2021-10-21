@@ -40,16 +40,16 @@ python3 train.py
 ```
 
 To train a model with different hyperparameters:
-| command | meaning |
-|:-:|:-:|
-| --seed  | the torch and numpy random seed  |
-| --epochs  | numbers of iterations the model with train on |
-| --type | the open or closed dataset  |
-| --obs_dim  | input dimensions  |
-| --rnn_nhidden  | rnn layer size  |
-| --nhidden  | decoder layer size  |
-| --latent_dim  | latent space size |
-| --lr | learning rate  |
+| command | argstype | meaning |
+|:-:|:-:|:-:|
+| --seed  | int | the torch and numpy random seed  |
+| --epochs  | int | numbers of iterations the model will run |
+| --type | str | either the `open` or `closed` dataset  |
+| --obs_dim  | int | input dimensions  |
+| --rnn_nhidden  | int | rnn layer size  |
+| --nhidden  | int | decoder layer size  |
+| --latent_dim  | int | latent space size |
+| --lr | float | learning rate  |
 
 Example: 
 ```
