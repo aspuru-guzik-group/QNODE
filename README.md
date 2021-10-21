@@ -60,6 +60,6 @@ python3 train.py --seed 1 --epochs 5000 --lr 5e-3 --type closed
 
 run 
 ```
-./create_plots.sh`
+./create_plots.sh
 ```
 <sub><sup>Note: you might have to run `chmod +x create_plots.sh`</sup></sub>
