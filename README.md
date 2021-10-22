@@ -1,4 +1,10 @@
-# QNODE: discovering quantum dynamics using latent neural ODEs
+# QNODE: Learning quantum dynamics using latent neural ODEs
+
+**Learning quantum dynamics using latent neural ODEs**
+
+*Matthew Choi, Daniel Flam-Spepherd, Thi Ha Kyaw, Alán Aspuru-Guzik*
+
+https://arxiv.org/pdf/2110.10721.pdf
 
 ## Samples
 <p align="center">
