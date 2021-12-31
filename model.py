@@ -1,11 +1,8 @@
 import numpy as np
-import numpy.random as npr
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torch.nn.functional as F
 from torchdiffeq import odeint
-from qutip import Bloch
 
 def save_model(model, model_name):
     torch.save(model.func.state_dict(), './saved_models/{}_func.pt'.format(model_name))
@@ -214,19 +211,17 @@ class latent_ode:
         return pred_z
 
 
-    def MSE(self, trajs, ts):
-        z0 = self.encode(trajs, ts)
-        pred_x = self.decode(z0, ts)
+    def MSE(self, trajs, train_ts):
+        z0 = self.encode(trajs, train_ts)
+        pred_x = self.decode(z0, train_ts)
 
-        total_recon_error = 0
-        num_trajs = trajs.shape[0]
-        time_steps = trajs.shape[1]
-        expect_dims = trajs.shape[2]
-        for i in range(num_trajs):
-            for j in range(time_steps):
-                for k in range(expect_dims):
-                    total_recon_error = (trajs[i,j,k] - pred_x[i,j,k]) ** 2
+        total_recon_error = np.mean((trajs.numpy() - pred_x.numpy()) ** 2)
+        average_recon_error = total_recon_error / trajs.shape[0]
+        print('total reconstruction error: {:6f}'.format(total_recon_error))
+        print('reconstruction error per trajectory: {:6f}'.format(average_recon_error))
 
-        average_recon_error = total_recon_error.item() / num_trajs
-        print('total reconstruction error:{:9f}'.format(total_recon_error))
-        print('reconstruction error per trajectory:{:9f}'.format(average_recon_error))
+        mse_errors = np.mean((trajs.numpy() - pred_x.numpy()) ** 2, axis=1)
+        mse_errors = np.mean(mse_errors, axis=1)
+
+        return mse_errors
+    
