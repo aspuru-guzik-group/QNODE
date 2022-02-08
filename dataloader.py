@@ -1,13 +1,8 @@
 from __future__ import print_function, division
-import os
-import torch
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib as mpl
-from matplotlib import cm
 from qutip import *
-from torch.utils.data import Dataset, DataLoader
-from torchvision import transforms, utils
+from torch.utils.data import Dataset
     
 def normalize(a):
 	a_oo = a - np.real(a).min()
@@ -117,8 +112,61 @@ class StochasticTwoLevelDataset(Dataset):
         bloch.add_points([self.spherical[:, 0], self.spherical[:, 1], self.spherical[:, 2]], 'm')
         bloch.save(directory)
 
+# two qubit functions
+
+def random_u(N):
+    #Return a Haar distributed random unitary NxN
+    #N being the system dimension
+    Z = np.random.randn(N,N) + 1.0j * np.random.randn(N,N)
+    [Q,R] = np.linalg.qr(Z)    # QR decomposition
+    D = np.diag(np.diagonal(R) / np.abs(np.diagonal(R)))
+    return np.dot(Q, D)
+
+def random_psi():
+    #Return random state, within computational subspace {|0>,|1>} 
+    Ur = random_u(2)
+    alpha = Ur[0,0]
+    beta = Ur[1,0]
+    ket0, ket1 = np.array([[1.],[0.]]), np.array([[0.],[1.]])
+    rand_vector = alpha * ket0 + beta * ket1 # alpha |0> + beta |1>
+    return alpha, beta, rand_vector
+
+def two_qubit_initial(num):
+    initial_states = []
+    for i in range(num):
+        _, _, vec1 = random_psi()
+        _, _, vec2 = random_psi()
+        initial_states.append(Qobj(np.kron(vec1, vec2)))
+    return initial_states
+
+
+class TwoQubitDataset(Dataset):
+    def __init__(self, omega=1, delta=1, J=1, num_batches=30, num_trajs=36, time_steps=300, stop=2, end=10):
+        sigmaz1, sigmaz2 = Qobj(np.kron(sigmaz(), np.eye(2))), Qobj(np.kron(np.eye(2), sigmaz()))
+        sigmax1, sigmax2 = Qobj(np.kron(sigmax(), np.eye(2))), Qobj(np.kron(np.eye(2), sigmax()))
+
+        self.num_trajs = num_batches * num_trajs
+        self.initial_states = two_qubit_initial(num_trajs)
+        self.total_time_steps = np.linspace(0, end, time_steps)
+
+        expect_data = []
+        for i in range(num_batches):
+            samp_z = np.random.uniform(1, 2.5, 1)[0]
+            samp_x = np.random.uniform(1, 2.5, 1)[0]
+            self.H = (omega / 2 * sigmaz1 * samp_z) + (delta / 2 * sigmax1 * samp_x) + (omega / 2 * sigmaz2 * samp_z) + (delta / 2 * sigmax2 * samp_x) + (J * sigmax1 * sigmax2)
+            solve = lambda state : sesolve(self.H, state, self.total_time_steps, e_ops=[sigmax1, sigmax2, sigmaz1, sigmaz2], progress_bar=None)
+            all_states = [solve(state).expect for state in self.initial_states]
+            states = [np.asarray(states, dtype='double') for states in all_states] 
+            states = np.asarray([np.column_stack([state[0], state[1], state[2], state[3]]) for state in states])
+            expect_data.append(states)
+        
+        expect_data = np.asarray(expect_data)
+        self.total_expect_data = expect_data.reshape(self.num_trajs, time_steps, 4)
+        self.train_time_steps = self.total_time_steps[np.where(self.total_time_steps <= stop)]
+        self.train_expect_data = self.total_expect_data[:,:self.train_time_steps.shape[0],:]
+
 if __name__ == '__main__':
-    data = StochasticTwoLevelDataset(dataset_type='closed')
-    data = StochasticTwoLevelDataset(dataset_type='open')
+    data = TwoQubitDataset()
+    print(data.total_expect_data.shape[0])
 
 

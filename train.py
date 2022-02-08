@@ -30,14 +30,12 @@ if __name__ == "__main__":
     save_dataset(data, '{}-{}'.format(args.type, args.seed))
     print('dataset {}-{} saved'.format(args.type, args.seed))
 
-
     #initializing the model
     trajs = torch.from_numpy(data.train_expect_data).float()
     ts = torch.from_numpy(data.train_time_steps).float()
     model = latent_ode(obs_dim=args.obs_dim, latent_dim=args.latent_dim, nhidden=args.nhidden, 
         rnn_nhidden=args.rnn_nhidden, lr=args.lr, batch=data.train_expect_data.shape[0])
 
-    
     model.train(trajs, ts, args.epochs)
     save_model(model, 'trained_{}_{}_{}_{}-{}'.format(args.type, args.obs_dim, args.latent_dim, args.rnn_nhidden, args.nhidden))
 

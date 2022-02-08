@@ -1,10 +1,9 @@
 import os
 import torch
 import numpy as np
+import math
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
 from qutip import *
 import imageio
 plt.rcParams['axes.labelsize'] = 16
@@ -167,3 +166,9 @@ def get_interpolate(model, data, i, j, n_steps=8):
     z1, z2 = z0[0,:], z0[1,:]
     zs = get_latent_interp(z1, z2, n_steps)
     return zs
+    
+def round_3sf(num_list):
+    trimmed = []
+    for num in num_list:
+        trimmed.append(round(num, 3 - int(math.floor(math.log10(abs(num)))) - 1))
+    return trimmed

@@ -27,10 +27,14 @@ def load(type):
         data = torch.load('saved_datasets/open_6_53_53_0.007.pt')
         model = latent_ode(batch=1080, obs_dim=3, latent_dim=6, nhidden=53, rnn_nhidden=53, lr=0.007, beta=1, extra_decode=True)
         load_model(model, 'open_6_53_53_0.007')
-    if type=='closed':
+    elif type == 'closed':
         data = torch.load('saved_datasets/closed_6_48_48_0.004.pt') 
         model = latent_ode(batch=1080, obs_dim=3, latent_dim=6, nhidden=48, rnn_nhidden=48, lr=0.004, extra_decode=True)
         load_model(model, 'closed_6_48_48_0.004')
+    elif type == 'two':
+        data = torch.load('saved_datasets/two_8_170_170_0.002.pt') 
+        model = latent_ode(batch=1080, obs_dim=4, latent_dim=8, nhidden=170, rnn_nhidden=170, lr=0.002, extra_decode=True)
+        load_model(model, 'two_8_170_170_0.002')
 
     return data, model
 
@@ -215,13 +219,9 @@ class latent_ode:
         z0 = self.encode(trajs, train_ts)
         pred_x = self.decode(z0, train_ts)
 
-        total_recon_error = np.mean((trajs.numpy() - pred_x.numpy()) ** 2)
-        average_recon_error = total_recon_error / trajs.shape[0]
-        print('total reconstruction error: {:6f}'.format(total_recon_error))
-        print('reconstruction error per trajectory: {:6f}'.format(average_recon_error))
-
         mse_errors = np.mean((trajs.numpy() - pred_x.numpy()) ** 2, axis=1)
         mse_errors = np.mean(mse_errors, axis=1)
+        avg_mse = np.mean(mse_errors)
 
-        return mse_errors
+        return avg_mse, mse_errors
     

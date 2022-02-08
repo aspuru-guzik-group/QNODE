@@ -2,9 +2,7 @@ import os
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
 from qutip import *
 from plot_helpers import *
 
@@ -19,18 +17,15 @@ def heisenberg_plot(type, samples=10, iter=0):
         os.makedirs('plots/{}_heisenberg'.format(type))
     data, model = load(type)
     time_end = 6
-    idx_ex = np.where(np.logical_and(data.total_time_steps >= expo_start, data.total_time_steps <= time_end))[0]
-    idx_train = np.where(data.total_time_steps <= train_end)[0]
     time_steps = torch.from_numpy(data.total_time_steps[np.where(data.total_time_steps <= time_end)]).float()
 
     decoded = model.decode(torch.randn(samples, 6), time_steps).numpy()
     var_x = 1 - decoded[:,:,0] ** 2 
     var_z = 1 - decoded[:,:,2] ** 2
 
-    fig = plt.figure()
+    plt.figure()
     ax = plt.axes(projection='3d')
 
-    # a,b = sx.min(), sx.min()
     x = np.linspace(-1/2, 1, 180)
     z = np.linspace(0, 6, 180)
     cmap = cm.get_cmap('Greens', samples)
