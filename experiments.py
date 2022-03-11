@@ -59,23 +59,23 @@ def bs_train_and_sample(type, num):
             bloch.render()
             bloch.axes.plot(t_trajs[:,0], t_trajs[:,1], t_trajs[:,2], c=t_col)
             bloch.axes.plot(e_trajs[:,0], e_trajs[:,1], e_trajs[:,2], c=e_col)
-            plt.savefig('plots/bs_train_and_sample/' + type  + str(r) + '_' + job + '_bs.png', bbox_inches = 'tight', pad_inches = 0)
+            plt.savefig('plots/bs_train_and_sample/' + type  + str(r) + '_' + job + '_bs.pdf', bbox_inches = 'tight', pad_inches = 0)
             plt.close()
 
             _, ax = plt.subplots()
             ax.set_aspect(aspect=1.7)
-            plt.xticks([0, 6], fontsize=28)
+            plt.xticks([0, 1, 2, 3, 4, 5, 6], [], fontsize=28)
             if type == 'open':
-                plt.ylim(0, 1)
-                plt.yticks([0, 1], fontsize=28)
+                plt.ylim(0, 1.1)
+                plt.yticks([0, 0.5, 1], [], fontsize=28)
             else:
-                plt.ylim(0.5, 1.5)
-                plt.yticks([0.5, 1.0, 1.5], fontsize=28)
+                plt.ylim(0.5, 1.6)
+                plt.yticks([0.5, 1.0, 1.5], [], fontsize=28)
         
             traj_norm = norm(np_trajs[i]) if job == 'train' else norm(xm[i])
             plt.plot(t[idxt], traj_norm[idxt], c=t_col, linewidth=1.3)
             plt.plot(t[idxe], traj_norm[idxe], c=e_col, linewidth=1.3)
-            plt.savefig('plots/bs_train_and_sample/' + type + str(r) + '_' + job + '_norm.png', bbox_inches = 'tight', pad_inches = 0)
+            plt.savefig('plots/bs_train_and_sample/' + type + str(r) + '_' + job + '_norm.pdf', bbox_inches = 'tight', pad_inches = 0)
             plt.close()
 
 def reconstruct_mse(type):
@@ -216,15 +216,17 @@ def mse_hist(type):
     plt.close()
 
 if __name__ == "__main__":
-    bs_train_and_sample('closed', 20)
-    bs_train_and_sample('open', 20)
-    reconstruct_mse('closed')
-    reconstruct_mse('open')
-    average_mse('closed')
-    average_mse('open')
-    mse_hist('closed')
-    mse_hist('open')
-    mse_hist('two')
+    torch.manual_seed(0)
+    np.random.seed(0)
+    bs_train_and_sample('closed', 100)
+    bs_train_and_sample('open', 100)
+    # reconstruct_mse('closed')
+    # reconstruct_mse('open')
+    # average_mse('closed')
+    # average_mse('open')
+    # mse_hist('closed')
+    # mse_hist('open')
+    # mse_hist('two')
         
         
 

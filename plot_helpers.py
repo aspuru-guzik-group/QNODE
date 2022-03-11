@@ -123,9 +123,9 @@ def bloch_format(bloch, view=[0, 90]):
     bloch.sphere_alpha = 0.1
     bloch.sphere_color = 'whitesmoke'
     bloch.view = view
-    bloch.ylabel = ['$\left|\\nearrow\\right>$','']
-    bloch.xlabel = ['$\left|\\rightarrow\\right>$','']
-    bloch.zlabel = ['$\left|\\uparrow\\right>$','$\left|\downarrow\\right>$']
+    bloch.ylabel = ['','']
+    bloch.xlabel = ['','']
+    bloch.zlabel = ['','']
     return bloch
 
 def slerp(val, low, high):

@@ -52,12 +52,21 @@ def interpolate(type='closed', n=25, n_steps=8, time_end=6):
     t = ts.numpy()
     idx = np.random.randint(0,data.total_expect_data.shape[0], size=(n))
     idx_ = np.random.randint(0,data.total_expect_data.shape[0], size=(n))
-    test = zip(idx,idx_)
     
+    if type == 'closed':
+        idx = [465]
+        idx_ = [694]
+    else:
+        idx = [36]
+        idx_ = [124]
+
+    
+    test = zip(idx,idx_)
+
     for i, j in test:
         zs = get_interpolate(model, data, i,j, n_steps=n_steps)
         xs = []
-        title = type + ' interpolate from ' +str(i)+ '-' +str(j)
+        title = type + '_interpolate_from_' +str(i)+ '-' +str(j)
 
         for l, z in enumerate(zs):
             view = [-50, 30]
@@ -67,7 +76,7 @@ def interpolate(type='closed', n=25, n_steps=8, time_end=6):
             bloch.axes.plot(x[:,1][idxt], -x[:,0][idxt], x[:,2][idxt], color='limegreen')
             bloch.axes.plot(x[:,1][idxe], -x[:,0][idxe], x[:,2][idxe], color='blue')
             xs.append(x)
-            plt.savefig('plots/{}_interpolate/{}-{}.png'.format(type, title, l), bbox_inches = 'tight', pad_inches = 0)
+            plt.savefig('plots/{}_interpolate/{}-{}.pdf'.format(type, title, l), bbox_inches = 'tight', pad_inches = 0)
             plt.close()
 
         construct_gif(xs, type, title)
@@ -75,14 +84,19 @@ def interpolate(type='closed', n=25, n_steps=8, time_end=6):
         #plot norm 
         for k, traj in enumerate(xs):
             fig, ax = plt.subplots()
-            plt.ylim(0, 1)
-            plt.yticks([0, 1], fontsize=28)
-            plt.xticks([0, 6], fontsize=28)
+            if type == 'closed':
+                plt.ylim(0.5, 1.6)
+                plt.yticks([0.5, 1.0, 1.5], [], fontsize=28)
+            else:
+                plt.ylim(0, 1.1)
+                plt.yticks([0, 0.5, 1.0], [], fontsize=28)
+            
+            plt.xticks([0, 1, 2, 3, 4, 5, 6], [], fontsize=28)
             ax.set_aspect(aspect=1.7)
             traj_norm = norm(traj)
             plt.plot(t[idxt], traj_norm[idxt], c='limegreen')
             plt.plot(t[idxe], traj_norm[idxe], c='blue')
-            plt.savefig('plots/{}_interpolate/{}_norm-{}.png'.format(type, title, k), bbox_inches = 'tight', pad_inches = 0)
+            plt.savefig('plots/{}_interpolate/{}_norm-{}.pdf'.format(type, title, k), bbox_inches = 'tight', pad_inches = 0)
             plt.close()
 
 
@@ -92,17 +106,24 @@ def interpolate(type='closed', n=25, n_steps=8, time_end=6):
         zs_torch = torch.reshape(zs_torch, (len(zs), zs[0].shape[0]))
         zts = odeint(model.func, zs_torch, ts).permute(1, 0, 2)
         zts = zts.detach().numpy()
+
+        if type == 'closed':
+            azim = 135
+            elev = 30
+        else:
+            azim = 90
+            elev = 8
         
         for p, x in enumerate(zts):
             fig = plt.figure()
-            axes = Axes3D(fig, azim=90, elev=8, auto_add_to_figure=False)
+            axes = Axes3D(fig, azim=azim, elev=elev, auto_add_to_figure=False)
             fig.add_axes(axes)
             axes.plot(x[:,0][idxt], x[:,1][idxt], x[:,2][idxt], color='limegreen', alpha=0.5)
             axes.plot(x[:,0][idxe], x[:,1][idxe], x[:,2][idxe], color='blue', alpha=0.5)
             plt.yticks([])
             plt.xticks([])
             axes.set_zticks([])
-            plt.savefig('plots/{}_interpolate/{}_ld-{}.png'.format(type, title, p), bbox_inches = 'tight', pad_inches = 0)
+            plt.savefig('plots/{}_interpolate/{}_ld-{}.pdf'.format(type, title, p), bbox_inches = 'tight', pad_inches = 0)
             plt.close()
 
 
