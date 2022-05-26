@@ -93,6 +93,7 @@ def interpolate(type='closed', n=25, n_steps=8, time_end=6):
             
             plt.xticks([0, 1, 2, 3, 4, 5, 6], [], fontsize=28)
             ax.set_aspect(aspect=1.7)
+            ax.tick_params(width=6, length=8)
             traj_norm = norm(traj)
             plt.plot(t[idxt], traj_norm[idxt], c='limegreen')
             plt.plot(t[idxe], traj_norm[idxe], c='blue')

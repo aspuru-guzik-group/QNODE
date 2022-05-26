@@ -44,16 +44,17 @@ def heisenberg_plot(type, samples=10, iter=0):
             ax.scatter3D(var_x[:, j], var_z[:, j], j / 30, marker='.', color=col_b, alpha=0.75)
     
     ax.set_xlabel(r" var$(x)  $")
-    ax.set_zlabel(r" time(arb. unit) ", fontsize=12)
+    ax.set_zlabel(r" time(arb. units) ", fontsize=12)
     ax.set_ylabel(r" var$(z) $")
     ax.view_init(elev=45, azim=-55)
     ax.text(-0.5,0.75,179, r' var$(x) + $var$(z) =1 $', rotation=90, fontsize=15, rotation_mode="anchor")
     title = "heisenberg_" + type
-    plt.savefig('plots/{}_heisenberg/{}_{}-{}.png'.format(type, samples, title, iter), bbox_inches='tight')
+    plt.savefig('plots/{}_heisenberg/{}_{}-{}.pdf'.format(type, samples, title, iter), bbox_inches='tight')
     plt.close()
 
 def main():
-    for k in range(1):
+    np.random.seed(0)
+    for k in range(50):
         heisenberg_plot('closed', 50, iter=k)
         heisenberg_plot('open', 50, iter=k)
     

@@ -4,7 +4,8 @@
 
 *Matthew Choi, Daniel Flam-Spepherd, Thi Ha Kyaw, Alán Aspuru-Guzik*
 
-https://arxiv.org/pdf/2110.10721.pdf
+https://journals.aps.org/pra/abstract/10.1103/PhysRevA.105.042403
+https://arxiv.org/abs/2110.10721
 
 ## Samples
 <p align="center">

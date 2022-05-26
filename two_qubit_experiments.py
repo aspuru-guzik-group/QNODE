@@ -6,6 +6,7 @@ import matplotlib
 from qutip import *
 from plot_helpers import *
 from model import load
+import matplotlib.ticker as mticker
 
 train_end = 2
 expo_start = 1.9732
@@ -143,25 +144,33 @@ def average_mse():
     trajs = torch.from_numpy(data.train_expect_data).float()
     z = model.encode(trajs, ts_t)
     xs = model.decode(z, ts_t).numpy()
-    mse = np.mean((data.train_expect_data - xs)**2, axis=0)
+    multiplier = 1000
+    mse = np.mean((data.train_expect_data - xs)**2, axis=0) * multiplier
     max_mse = np.max(mse, axis=0)
     max_mse = round_3sf(max_mse)
 
     _, axs = plt.subplots(4, 1)
     plt.subplots_adjust(hspace=0.5)
 
+    padding = 0.0005 * multiplier
+
     for i, ax in enumerate(axs):
         ax.plot(data.train_time_steps, mse[:, i], c='limegreen')
-        ax.set_ylim(-0.0005, max_mse[i] + 0.0005)
+        ax.set_ylim(-padding, max_mse[i] + padding)
         ax.set_yticks([0, max_mse[i] / 2, max_mse[i]])
         ax.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
-        if i != len(axs) - 1:
-            ax.set_xticks([])
+        ax.yaxis.set_minor_formatter(mticker.ScalarFormatter())
+        ax.ticklabel_format(style='plain', axis='y')
+        ax.set_xticks([])
+        
+        if i == len(axs) - 1:
+                ax.set_xticks([0, 0.5, 1.0, 1.5, 2])
+                ax.set_xlabel('time(s)', fontsize=20)
 
     plt.savefig('plots/two_avg_amp_over_mse.pdf', bbox_inches = 'tight', pad_inches = 0.05)
     plt.close()
 
 if __name__ == "__main__":
-    train_and_sample(20)
-    reconstruct_mse()
+    # train_and_sample(20)
+    # reconstruct_mse()
     average_mse()
